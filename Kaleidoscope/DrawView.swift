@@ -9,37 +9,46 @@
 import UIKit
 
 struct LineArray {
-    var listPoints: [CGPoint] = []
+    var listLine: [Line] = []
 }
 
 class DrawView: UIView {
     
-    var lines: [Line] = []
-    var lines1: [Line] = []
-    var lines2: [Line] = []
-    var lines3: [Line] = []
-    var lines4: [Line] = []
-    
     var list: [LineArray] = []
-    
+    var listLayer: [CAShapeLayer] = []
     var lastPoint: CGPoint!
-    var pathLayer: CAShapeLayer = CAShapeLayer()
-    var pathLayer2: CAShapeLayer = CAShapeLayer()
-    var pathLayer3: CAShapeLayer = CAShapeLayer()
-    var pathLayer4: CAShapeLayer = CAShapeLayer()
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        for i in 0...15 {
+            list.append(LineArray())
+            listLayer.append(CAShapeLayer())
+        }
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         lastPoint = touches.first?.locationInView(self)
-        
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let newPoint = touches.first?.locationInView(self)
-        lines.append(Line(_start: lastPoint, _end: newPoint!))
+        list[0].listLine.append(Line(_start: lastPoint, _end: newPoint!))
+        list[1].listLine.append(Line(_start: rotation2(lastPoint, angle: 45), _end: rotation2(newPoint!, angle: 45)))
+        list[2].listLine.append(Line(_start: rotation2(lastPoint, angle: 90), _end: rotation2(newPoint!, angle: 90)))
+        list[3].listLine.append(Line(_start: rotation2(lastPoint, angle: 135), _end: rotation2(newPoint!, angle: 135)))
+        list[4].listLine.append(Line(_start: rotation2(lastPoint, angle: 180), _end: rotation2(newPoint!, angle: 180)))
+        list[5].listLine.append(Line(_start: rotation2(lastPoint, angle: 225), _end: rotation2(newPoint!, angle: 225)))
+        list[6].listLine.append(Line(_start: rotation2(lastPoint, angle: 270), _end: rotation2(newPoint!, angle: 270)))
+        list[7].listLine.append(Line(_start: rotation2(lastPoint, angle: 315), _end: rotation2(newPoint!, angle: 315)))
+        list[8].listLine.append(Line(_start: rotateFlippedPoint(lastPoint, angle: 0), _end: rotateFlippedPoint(newPoint!, angle: 0)))
+        list[9].listLine.append(Line(_start: rotateFlippedPoint(lastPoint, angle: 45), _end: rotateFlippedPoint(newPoint!, angle: 45)))
+        list[10].listLine.append(Line(_start: rotateFlippedPoint(lastPoint, angle: 90), _end: rotateFlippedPoint(newPoint!, angle: 90)))
+        list[11].listLine.append(Line(_start: rotateFlippedPoint(lastPoint, angle: 135), _end: rotateFlippedPoint(newPoint!, angle: 135)))
+        list[12].listLine.append(Line(_start: rotateFlippedPoint(lastPoint, angle: 180), _end: rotateFlippedPoint(newPoint!, angle: 180)))
+        list[13].listLine.append(Line(_start: rotateFlippedPoint(lastPoint, angle: 225), _end: rotateFlippedPoint(newPoint!, angle: 225)))
+        list[14].listLine.append(Line(_start: rotateFlippedPoint(lastPoint, angle: 270), _end: rotateFlippedPoint(newPoint!, angle: 270)))
+        list[15].listLine.append(Line(_start: rotateFlippedPoint(lastPoint, angle: 315), _end: rotateFlippedPoint(newPoint!, angle: 315)))
+        
         lastPoint = newPoint
         setNeedsDisplay()
     }
@@ -50,7 +59,7 @@ class DrawView: UIView {
         // Drawing code
         let context = UIGraphicsGetCurrentContext()
         CGContextBeginPath(context)
-        for line in lines {
+        for line in list[0].listLine {
             CGContextMoveToPoint(context, line.start.x, line.start.y)
             CGContextAddLineToPoint(context, line.end.x, line.end.y)
         }
@@ -87,28 +96,17 @@ class DrawView: UIView {
     }
     
     func clear() {
-        self.lines = []
-        self.lines1 = []
-        self.lines2 = []
-        self.lines3 = []
-        self.lines4 = []
-        pathLayer.removeFromSuperlayer()
-        pathLayer2.removeFromSuperlayer()
-        pathLayer3.removeFromSuperlayer()
-        pathLayer4.removeFromSuperlayer()
+        for i in 0...15 {
+            list[i].listLine = []
+            listLayer[i].removeFromSuperlayer()
+        }
         setNeedsDisplay()
     }
     
-    func flipVertically() {
+    func flipVertically(point: CGPoint) -> CGPoint {
         let oy = self.frame.height
-//        let ox = self.frame.width
-        for line in lines {
-            let startPoint = CGPoint(x: line.start.x, y: (oy-line.start.y))
-            let endPoint = CGPoint(x: line.end.x, y: (oy-line.end.y))
-            lines.append(Line(_start: startPoint, _end: endPoint))
-            lines1.append(Line(_start: startPoint, _end: endPoint))
-        }
-//        setNeedsDisplay()
+        let newPoint = CGPoint(x: point.x, y: oy-point.y)
+        return newPoint
     }
     
     
@@ -128,130 +126,49 @@ class DrawView: UIView {
 //        }
     
     //Rotate a point arount a point programatically
-        func rotation2(angle: Double) {
+    func rotation2(point:CGPoint, angle: Double) -> CGPoint {
             let originY = self.frame.height/2
             let originX = self.frame.width/2
             let translateTransform = CGAffineTransformMakeTranslation(originX, originY)
             let rotationTransform = CGAffineTransformMakeRotation(CGFloat(angle * M_PI / 180))
             let customRotation = CGAffineTransformConcat(CGAffineTransformConcat( CGAffineTransformInvert(translateTransform), rotationTransform), translateTransform);
-            if (angle == 90.0) {
-                for line in lines {
-                    let newStartPoint = CGPointApplyAffineTransform(line.start, customRotation)
-                    let newEndPoint = CGPointApplyAffineTransform(line.end, customRotation)
-                    lines.append(Line(_start: newStartPoint, _end: newEndPoint))
-                    lines2.append(Line(_start: newStartPoint, _end: newEndPoint))
-                    print(lines2.count)
-                }
-            } else if (angle == 45.0) {
-                for line in lines {
-                    let newStartPoint = CGPointApplyAffineTransform(line.start, customRotation)
-                    let newEndPoint = CGPointApplyAffineTransform(line.end, customRotation)
-                    lines.append(Line(_start: newStartPoint, _end: newEndPoint))
-                    lines3.append(Line(_start: newStartPoint, _end: newEndPoint))
-                    print(lines3.count)
-                }
-            } else if (angle == 180.0) {
-                for line in lines {
-                    let newStartPoint = CGPointApplyAffineTransform(line.start, customRotation)
-                    let newEndPoint = CGPointApplyAffineTransform(line.end, customRotation)
-                    lines.append(Line(_start: newStartPoint, _end: newEndPoint))
-                    lines4.append(Line(_start: newStartPoint, _end: newEndPoint))
-                    print(lines4.count)
-                }
-            }
-        }
+            var newPoint = CGPointApplyAffineTransform(point, customRotation)
+            return newPoint
+    }
+    
+    func rotateFlippedPoint(point: CGPoint, angle: Double) -> CGPoint {
+        let flippedPoint = flipVertically(point)
+        let rotatedPoint = rotation2(flippedPoint, angle: angle)
+        return rotatedPoint
+    }
     
         func makeMagic() {
-            var path1 = UIBezierPath()
-            for line in lines1 {
-                path1.moveToPoint(line.start)
-                path1.addLineToPoint(line.end)
+            for i in 0...15 {
+                var path = UIBezierPath()
+                for line in list[i].listLine {
+                    path.moveToPoint(line.start)
+                    path.addLineToPoint(line.end)
+                }
+                listLayer[i].frame = self.bounds
+                listLayer[i].path = path.CGPath
+                listLayer[i].strokeColor = UIColor.blackColor().CGColor
+                listLayer[i].fillColor = nil
+                listLayer[i].lineWidth = 2.5
+                listLayer[i].lineJoin = kCALineJoinBevel
+                listLayer[i].strokeEnd = 0.0
+                
+                self.layer.addSublayer(listLayer[i])
             }
-            
-            var path2 = UIBezierPath()
-            for line in lines2 {
-                path2.moveToPoint(line.start)
-                path2.addLineToPoint(line.end)
-            }
-            
-            var path3 = UIBezierPath()
-            for line in lines3 {
-                path3.moveToPoint(line.start)
-                path3.addLineToPoint(line.end)
-            }
-            
-            var path4 = UIBezierPath()
-            for line in lines4 {
-                path4.moveToPoint(line.start)
-                path4.addLineToPoint(line.end)
-            }
-            pathLayer.frame = self.bounds
-            pathLayer.path = path1.CGPath
-            pathLayer.strokeColor = UIColor.blackColor().CGColor
-            pathLayer.fillColor = nil
-            pathLayer.lineWidth = 2.5
-            pathLayer.lineJoin = kCALineJoinBevel
-            pathLayer.strokeEnd = 0.0
-            //
-            pathLayer2.frame = self.bounds
-            pathLayer2.path = path2.CGPath
-            pathLayer2.strokeColor = UIColor.blackColor().CGColor
-            pathLayer2.fillColor = nil
-            pathLayer2.lineWidth = 2.5
-            pathLayer2.lineJoin = kCALineJoinBevel
-            pathLayer2.strokeEnd = 0.0
-            //
-            pathLayer3.frame = self.bounds
-            pathLayer3.path = path3.CGPath
-            pathLayer3.strokeColor = UIColor.blackColor().CGColor
-            pathLayer3.fillColor = nil
-            pathLayer3.lineWidth = 2.5
-            pathLayer3.lineJoin = kCALineJoinBevel
-            pathLayer3.strokeEnd = 0.0
-            //
-            pathLayer4.frame = self.bounds
-            pathLayer4.path = path4.CGPath
-            pathLayer4.strokeColor = UIColor.blackColor().CGColor
-            pathLayer4.fillColor = nil
-            pathLayer4.lineWidth = 2.5
-            pathLayer4.lineJoin = kCALineJoinBevel
-            pathLayer4.strokeEnd = 0.0
-                        
-            self.layer.addSublayer(pathLayer)
-            self.layer.addSublayer(pathLayer2)
-            self.layer.addSublayer(pathLayer3)
-            self.layer.addSublayer(pathLayer4)
+
             
             var pathAnimation = CABasicAnimation(keyPath: "strokeEnd")
-            pathAnimation.duration = 2
+            pathAnimation.duration = 3
             pathAnimation.fromValue = 0
             pathAnimation.toValue = 1
             
-            var pathAnimation2 = CABasicAnimation(keyPath: "strokeEnd")
-            pathAnimation2.duration = 4
-            pathAnimation2.fromValue = 0
-            pathAnimation2.toValue = 1
-            
-            var pathAnimation3 = CABasicAnimation(keyPath: "strokeEnd")
-            pathAnimation3.duration = 4
-            pathAnimation3.fromValue = 0
-            pathAnimation3.toValue = 1
-            
-            var pathAnimation4 = CABasicAnimation(keyPath: "strokeEnd")
-            pathAnimation4.duration = 4
-            pathAnimation4.fromValue = 0
-            pathAnimation4.toValue = 1
-            
-            pathLayer.strokeEnd = 1
-            pathLayer2.strokeEnd = 1
-            pathLayer3.strokeEnd = 1
-            pathLayer4.strokeEnd = 1
-            pathLayer.addAnimation(pathAnimation, forKey: "animateStroke")
-            
-            pathLayer2.addAnimation(pathAnimation2, forKey: "animateStroke")
-            
-            pathLayer3.addAnimation(pathAnimation3, forKey: "animateStroke")
-            
-            pathLayer4.addAnimation(pathAnimation4, forKey: "animateStroke")
+            for i in 0...15 {
+                listLayer[i].strokeEnd = 1
+                listLayer[i].addAnimation(pathAnimation, forKey: "animateStroke")
+            }
         }
 }

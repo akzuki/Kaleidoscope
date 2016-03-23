@@ -15,24 +15,24 @@ class ViewController: UIViewController {
         drawing.clear()
     }
     @IBAction func magicTapped(sender: UIButton) {
-        drawing.flipVertically()
-        drawing.rotation2(90)
-        drawing.rotation2(45)
-        drawing.rotation2(180)
+//        drawing.flipVertically()
+//        drawing.rotation2(90)
+//        drawing.rotation2(45)
+//        drawing.rotation2(180)
         drawing.makeMagic()
         
     }
     @IBAction func flip(sender: UIButton) {
-        drawing.flipVertically()
+//        drawing.flipVertically()
     }
     @IBAction func rotate90(sender: UIButton) {
-        drawing.rotation2(90)
+//        drawing.rotation2(90)
     }
     @IBAction func rotate45(sender: UIButton) {
-        drawing.rotation2(45)
+//        drawing.rotation2(45)
     }
     @IBAction func rotate180(sender: UIButton) {
-        drawing.rotation2(180)
+//        drawing.rotation2(180)
     }
     
     @IBAction func getImage(sender: UIButton) {
