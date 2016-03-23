@@ -24,6 +24,7 @@ class DrawView: UIView {
             list.append(LineArray())
             listLayer.append(CAShapeLayer())
         }
+        self.clipsToBounds = true
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -67,32 +68,6 @@ class DrawView: UIView {
         CGContextSetLineCap(context, CGLineCap.Round)
         CGContextSetRGBStrokeColor(context, 0, 0, 0, 1)
         CGContextStrokePath(context)
-//        var path = UIBezierPath()
-//        for line in lines {
-//            path.moveToPoint(line.start)
-//            path.addLineToPoint(line.end)
-//        }
-//        var pathLayer: CAShapeLayer = CAShapeLayer()
-//        pathLayer.frame = self.bounds
-//        pathLayer.path = path.CGPath
-//        pathLayer.strokeColor = UIColor.blackColor().CGColor
-//        pathLayer.fillColor = nil
-//        pathLayer.lineWidth = 2.5
-//        pathLayer.lineJoin = kCALineJoinBevel
-//        pathLayer.strokeEnd = 0.0
-//        //
-//        
-//        self.layer.addSublayer(pathLayer)
-//        
-//        var pathAnimation = CABasicAnimation(keyPath: "strokeEnd")
-//        pathAnimation.duration = 6
-//        pathAnimation.fromValue = 0
-//        pathAnimation.toValue = 1
-//        
-//        pathLayer.strokeEnd = 1
-//        
-//        pathLayer.addAnimation(pathAnimation, forKey: "animateStroke")
-        
     }
     
     func clear() {
@@ -154,7 +129,7 @@ class DrawView: UIView {
                 listLayer[i].strokeColor = UIColor.blackColor().CGColor
                 listLayer[i].fillColor = nil
                 listLayer[i].lineWidth = 2.5
-                listLayer[i].lineJoin = kCALineJoinBevel
+                listLayer[i].lineJoin = kCALineJoinRound
                 listLayer[i].strokeEnd = 0.0
                 
                 self.layer.addSublayer(listLayer[i])

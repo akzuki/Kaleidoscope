@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Kaleidoscope/DrawView.swift"
-            timestampString = "480383931.575208"
+            timestampString = "480427413.00953"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
             landmarkName = "rotateFlippedPoint(_:angle:)"
             landmarkType = "5">
          </BreakpointContent>
